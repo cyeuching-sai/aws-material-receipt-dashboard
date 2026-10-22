@@ -24,13 +24,25 @@ AWS SAM 範本會建立：私有來源 S3、私有前端 S3、CloudFront、兩�
 ## 專案結構
 
 ```text
-apps/dashboard/        Dashboard、Lambda Handler、共用規則與自動測試
-infrastructure/aws/    AWS SAM / CloudFormation 範本
-synthetic-data/        合成 XLSX 範例與格式規格
-docs/architecture/     架構與資料模型設計
-docs/deployment/       部署、設定、驗證、清理與資源盤點
-scripts/               本機驗證與前端發布腳本
+aws-material-receipt-dashboard/
+├─ apps/
+│  └─ dashboard/                 看板前端、API 路由、Lambda Handler、共用規則與測試
+│     ├─ app/                    Next.js 頁面與 API 路由
+│     ├─ aws/                    Processor、API 與 DynamoDB Adapter
+│     ├─ lib/                    Excel 解析、規則判定與資料處理服務
+│     ├─ static/                 靜態看板建置入口
+│     └─ tests/                  31 項自動測試
+├─ infrastructure/
+│  └─ aws/                       AWS SAM / CloudFormation 範本與部署設定範例
+├─ synthetic-data/               合成 XLSX 範例及其格式規格
+│  └─ demo-incoming/             可直接上傳驗證的示範檔案
+├─ docs/
+│  ├─ architecture/              架構、資料模型、來源檔存取與 UI 設計
+│  └─ deployment/                設定、部署、驗證、資源盤點與清理流程
+└─ scripts/                       本機驗證與前端發布腳本
 ```
+
+各資料夾的用途與閱讀順序，請見 [文件索引](docs/README.md)。
 
 ## 本機驗證
 
@@ -54,7 +66,7 @@ pnpm run build:static
 1. [設定說明](docs/deployment/configuration.md)
 2. [部署流程](docs/deployment/deploy.md)
 3. [驗證清單](docs/deployment/verification.md)
-4. [資源盤點](docs/aws-resource-inventory.md)
+4. [資源盤點](docs/deployment/aws-resource-inventory.md)
 5. [清理流程](docs/deployment/teardown.md)
 
 ## 安全與限制

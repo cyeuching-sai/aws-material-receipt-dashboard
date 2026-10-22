@@ -2,7 +2,7 @@
 
 此目錄只允許 100% 合成資料。不得複製公司工單、料號、人員、數量、路徑或原始 Excel 內容。
 
-`demo-incoming/` 與 `apps/dashboard/public/demo-files/` 提供可直接用於測試與展示的合成 XLSX 範例。欄位與情境定義請見 [`../docs/architecture/architecture/Synthetic_Demo_File_Spec_V1.md`](../docs/architecture/architecture/Synthetic_Demo_File_Spec_V1.md)。
+`demo-incoming/` 與 `apps/dashboard/public/demo-files/` 提供可直接用於測試與展示的合成 XLSX 範例。欄位與情境定義請見 [`../docs/architecture/Synthetic_Demo_File_Spec_V1.md`](../docs/architecture/Synthetic_Demo_File_Spec_V1.md)。
 
 ## 本機展示自動化
 
