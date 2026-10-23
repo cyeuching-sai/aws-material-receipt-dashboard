@@ -1,19 +1,27 @@
-# 文件索引
+# Documentation index
 
-本專案的文件依「先理解設計，再執行部署與驗證」的順序整理。
+[繁體中文](README.zh-TW.md) | **English**
 
-## 1. 架構與設計
+Use this order to understand, reproduce, and safely retire the prototype.
 
-- [AWS 服務選型](architecture/AWS_Service_Selection_V1.md)：各 AWS 元件的責任與選用原因。
-- [統一資料模型](architecture/Canonical_Data_Model_V1.md)：新舊 Excel 轉換後使用的資料欄位。
-- [合成檔案規格](architecture/Synthetic_Demo_File_Spec_V1.md)：Demo XLSX 的欄位與測試情境。
-- [來源文件受控開啟設計](architecture/Source_Document_Access_Design_V1.md)：短效連結與來源檔保護方式。
-- [看板介面設計需求](architecture/Dashboard_UI_Design_Requirements_V1.md)：看板資訊分層與操作原則。
+## 1. Understand the design
 
-## 2. 部署、驗證與清理
+- [AWS service selection](architecture/AWS_Service_Selection_V1.md) — responsibilities and reasons for each AWS service.
+- [Canonical data model](architecture/Canonical_Data_Model_V1.md) — shared fields after legacy and current workbook conversion.
+- [Synthetic demo file specification](architecture/Synthetic_Demo_File_Spec_V1.md) — workbook columns and test scenarios.
+- [Controlled source-document access](architecture/Source_Document_Access_Design_V1.md) — short-lived links and source protection.
+- [Dashboard UI design requirements](architecture/Dashboard_UI_Design_Requirements_V1.md) — information hierarchy and operating principles.
 
-- [設定說明](deployment/configuration.md)：環境變數與部署前設定。
-- [部署流程](deployment/deploy.md)：以 AWS SAM 部署的步驟。
-- [驗證清單](deployment/verification.md)：本機與 AWS 驗證項目。
-- [AWS 資源盤點](deployment/aws-resource-inventory.md)：範本建立的資源與用途。
-- [清理流程](deployment/teardown.md)：Demo 結束後的資源清理方式。
+> The detailed design documents above are maintained in Traditional Chinese; the [English project overview](../README.md) provides the implementation context for international readers.
+
+## 2. Deploy, verify, and clean up
+
+- [Configuration](deployment/configuration.md) — required environment values and preparation.
+- [Deployment](deployment/deploy.md) — deployment through AWS SAM.
+- [Verification checklist](deployment/verification.md) — local and AWS acceptance checks.
+- [AWS resource inventory](deployment/aws-resource-inventory.md) — resources provisioned by the template.
+- [Teardown](deployment/teardown.md) — remove a demo deployment safely.
+
+## 3. Presentation
+
+- [Public project presentation](presentation/AWS_Material_Receipt_Dashboard_Public_zh-TW.pptx) — a Traditional-Chinese, public-safe project overview. It excludes personal details, account identifiers, credentials, and live endpoint information.

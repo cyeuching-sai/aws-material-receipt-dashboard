@@ -1,50 +1,53 @@
 # AWS Material Receipt Dashboard
 
-以 AWS Serverless 架構建立的物料點收示範系統。它將 Excel 檔案匯入問題抽象化為可重建的流程：檔案進入私有 S3 後，自動觸發 Lambda 解析、規則判定、資料品質檢查、DynamoDB 保存，再由 HTTP API 與 CloudFront 看板呈現結果。
+[繁體中文](README.zh-TW.md) | **English**
 
-> 本 Repository 僅使用 Synthetic Demo Data，不含公司資料、個人資料、AWS 憑證、實際帳號資訊或既有雲端端點。
+An AWS Serverless prototype for turning material-receipt Excel files into a traceable, reviewable dashboard workflow. A file uploaded to private S3 is parsed and validated by Lambda, evaluated against business rules, saved to DynamoDB, and shown through an HTTP API and CloudFront dashboard.
+
+> **Public-safe repository:** all workbooks and records are synthetic demo data. No company data, personal data, AWS credentials, account identifiers, or live endpoints are included.
 
 ![AWS Serverless architecture](docs/assets/aws-serverless-architecture.svg)
 
-## 功能
+## What it demonstrates
 
-- 新舊 Excel 格式解析後轉為統一資料模型。
-- 依缺料、額外 PN、未完成、數量差異與實點差異判定工單結果。
-- 使用內容雜湊避免同一檔案重複匯入。
-- 損壞或格式不符的檔案會移入 `rejected/`，留下可追溯的結構化日誌。
-- 看板將 PN 覆蓋率、點收結果與資料品質分開呈現。
-- API 不公開來源檔內部位置；需要查看文件時才產生短效連結。
+| Capability | Design outcome |
+| --- | --- |
+| Multi-version workbook parsing | Legacy and current Excel layouts are converted into one canonical data model before rules run. |
+| Receipt assessment | Shortage, extra PN, pending receipt, quantity difference, and actual-receipt difference are evaluated separately. |
+| Duplicate protection | A content hash prevents the same workbook from creating duplicate imports or recalculations. |
+| Safe rejection path | Corrupt or invalid files are kept in `rejected/` with structured, traceable CloudWatch records. |
+| Clear dashboard signals | PN coverage, receipt status, and data quality are intentionally presented as separate signals. |
+| Controlled source access | The API does not expose internal object locations; source files are opened only through short-lived links. |
 
-## 架構
+## Architecture
 
 `Synthetic XLSX → Private S3 → Processor Lambda → DynamoDB → HTTP API → CloudFront Dashboard`
 
-AWS SAM 範本會建立：私有來源 S3、私有前端 S3、CloudFront、兩張 DynamoDB 表、Processor Lambda、API Lambda、HTTP API、IAM 權限與 CloudWatch Log Group。
+The AWS SAM template provisions private source and frontend buckets, CloudFront, two DynamoDB tables, Processor and API Lambda functions, an HTTP API, IAM permissions, and CloudWatch log groups.
 
-## 專案結構
+## Project map
 
 ```text
 aws-material-receipt-dashboard/
-├─ apps/
-│  └─ dashboard/                 看板前端、API 路由、Lambda Handler、共用規則與測試
-│     ├─ app/                    Next.js 頁面與 API 路由
-│     ├─ aws/                    Processor、API 與 DynamoDB Adapter
-│     ├─ lib/                    Excel 解析、規則判定與資料處理服務
-│     ├─ static/                 靜態看板建置入口
-│     └─ tests/                  31 項自動測試
-├─ infrastructure/
-│  └─ aws/                       AWS SAM / CloudFormation 範本與部署設定範例
-├─ synthetic-data/               合成 XLSX 範例及其格式規格
-│  └─ demo-incoming/             可直接上傳驗證的示範檔案
-├─ docs/
-│  ├─ architecture/              架構、資料模型、來源檔存取與 UI 設計
-│  └─ deployment/                設定、部署、驗證、資源盤點與清理流程
-└─ scripts/                       本機驗證與前端發布腳本
+├─ apps/dashboard/              Dashboard UI, API routes, Lambda handlers, rules, and tests
+│  ├─ app/                      Next.js pages and API routes
+│  ├─ aws/                      Processor, API, and DynamoDB adapters
+│  ├─ lib/                      Excel parser, rule engine, and ingestion services
+│  ├─ static/                   Static-dashboard build entry point
+│  └─ tests/                    31 automated tests
+├─ infrastructure/aws/          AWS SAM / CloudFormation template and deployment examples
+├─ synthetic-data/              Synthetic XLSX examples and their specification
+│  └─ demo-incoming/            Demo files ready for upload-based verification
+├─ docs/                        Architecture, deployment, verification, and presentation materials
+│  ├─ architecture/             Canonical model, UI, access-control, and AWS design notes
+│  ├─ deployment/               Configuration, deployment, verification, inventory, and teardown
+│  └─ presentation/             Public-safe project presentation
+└─ scripts/                     Local validation and frontend publishing scripts
 ```
 
-各資料夾的用途與閱讀順序，請見 [文件索引](docs/README.md)。
+Start with the [documentation index](docs/README.md), review the [public project presentation](docs/presentation/AWS_Material_Receipt_Dashboard_Public_zh-TW.pptx), or use the [繁體中文文件索引](docs/README.zh-TW.md).
 
-## 本機驗證
+## Quick start: local verification
 
 ```powershell
 cd apps/dashboard
@@ -53,28 +56,28 @@ pnpm test
 pnpm run build:static
 ```
 
-如需驗證完整 SAM 範本，請由專案根目錄執行：
+To validate the full SAM template from the repository root:
 
 ```powershell
 .\scripts\Build-AwsPrototype.ps1
 ```
 
-## 部署與驗證
+## Deployment guide
 
-請依序閱讀：
+Follow these documents in order:
 
-1. [設定說明](docs/deployment/configuration.md)
-2. [部署流程](docs/deployment/deploy.md)
-3. [驗證清單](docs/deployment/verification.md)
-4. [資源盤點](docs/deployment/aws-resource-inventory.md)
-5. [清理流程](docs/deployment/teardown.md)
+1. [Configuration](docs/deployment/configuration.md)
+2. [Deployment](docs/deployment/deploy.md)
+3. [Verification](docs/deployment/verification.md)
+4. [AWS resource inventory](docs/deployment/aws-resource-inventory.md)
+5. [Teardown](docs/deployment/teardown.md)
 
-## 安全與限制
+## Security and scope
 
-- 請勿將 `.env`、AWS credentials、公司來源檔、真實工單或正式環境網址提交到 Git。
-- 範本預設為訓練用 Demo 環境，CORS 與無登入設計不可直接沿用到正式系統。
-- 不建議長期公開可寫入的 Demo API；需要 Live Demo 時，應另外補上身分驗證、來源限制、限流與費用防護。
+- Never commit `.env` files, AWS credentials, company source workbooks, real work orders, or production URLs.
+- This template is a training prototype. Its CORS and unauthenticated-demo design must not be reused unchanged in production.
+- A public, write-enabled demo API should have authentication, origin restrictions, rate limiting, and cost protections before real use.
 
-## 授權
+## License
 
-本專案採用 [MIT License](LICENSE)。
+Released under the [MIT License](LICENSE).
